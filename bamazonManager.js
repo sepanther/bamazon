@@ -36,7 +36,8 @@ function choices() {
                 break;
                 // console.log('add to inventory')
             case 'Add New Product':
-                console.log('add new product')
+                addProduct();
+                // console.log('add new product')
                 break;
         }
     })
@@ -75,7 +76,7 @@ function viewLow() {
 }
 
 function addInventory() {
-    connection.query("SELECT * FROM products"), function(err, results) {
+    connection.query("SELECT * FROM products", function(err, results) {
         if (err) throw err;
         inquirer.prompt([
             {
@@ -89,9 +90,60 @@ function addInventory() {
                     }
                     return choiceArray;
                 }
+            },
+            {
+                type: 'input',
+                name: 'howMany',
+                message: 'How much inventory are you adding?'
             }
-        ]).then(console.log(answer.product))
-    }
+        ]).then(function(answer) {
+            var itemChoice;
+            for (i=0; i < results.length; i++) {
+                if (answer.product === results[i].product_name) {
+                    itemChoice = results[i]
+                    break
+                }
+            }
+            var newQuant = parseInt(itemChoice.stock_quantity) + parseInt(answer.howMany)
+            connection.query("UPDATE products SET stock_quantity = ? WHERE item_id = ?", [newQuant, itemChoice.item_id], function(err) {
+                if (err) throw err;
+                console.log('The new quantity for ' + answer.product.toLowerCase() + ' is ' + newQuant + '.')
+            })
+            choices();
+        })
+    })
+}
+
+function addProduct() {
+    connection.query("SELECT * FROM products", function(err, results) {
+        if (err) throw err;
+        inquirer.prompt([
+            {
+                name: 'product',
+                type: 'input',
+                message: 'What product would you like to add?'
+            },
+            {
+                name: 'department',
+                type: 'list',
+                message: 'What department does this product belong in?',
+                choices: function() {
+                    var choiceArr = [];
+                    for (i=0; i < results.length; i++) {
+                        choiceArr.push(results[i].department_name)
+                    }
+                    choiceArr = choiceArr.filter((x, i, a) => a.indexOf(x) == i)
+                    return choiceArr;
+                }
+            }
+        ]).then(function(answer) {
+            connection.query("UPDATE products SET ?", 
+        {
+            
     
-    
+        })
+        })
+        
+    })
+        
 }
