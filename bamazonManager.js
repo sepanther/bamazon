@@ -121,12 +121,12 @@ function addProduct() {
             {
                 name: 'product',
                 type: 'input',
-                message: 'What product would you like to add?'
+                message: 'Product name: '
             },
             {
                 name: 'department',
                 type: 'list',
-                message: 'What department does this product belong in?',
+                message: 'Product department: ',
                 choices: function() {
                     var choiceArr = [];
                     for (i=0; i < results.length; i++) {
@@ -135,15 +135,30 @@ function addProduct() {
                     choiceArr = choiceArr.filter((x, i, a) => a.indexOf(x) == i)
                     return choiceArr;
                 }
+            },
+            {
+                name: 'price',
+                type: 'input',
+                message: 'Product price: ',
+            },
+            {
+                name: 'stock',
+                type: 'input',
+                message: "Quantity in stock: "
             }
         ]).then(function(answer) {
-            connection.query("UPDATE products SET ?", 
+            connection.query("INSERT INTO products SET ?", 
         {
-            
-    
+            product_name: answer.product,
+            department_name: answer.department,
+            price: answer.price,
+            stock_quantity: answer.stock
+        }, function(err) {
+            if (err) throw err;
+            console.log('The new product ' + answer.product + ' has been added.')
         })
+        choices();
         })
-        
     })
         
 }

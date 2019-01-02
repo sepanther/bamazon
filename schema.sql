@@ -25,5 +25,20 @@ VALUES ('Pants', 'Clothing', 25, 20),
 ('Lunchables', 'Food', 7, 20),
 ('Bread', 'Food', 3, 40);
 
+CREATE TABLE departments (
+    department_id INT NOT NULL AUTO_INCREMENT,
+    department_name VARCHAR(50) NOT NULL,
+    overhead_costs INTEGER(20) NOT NULL,
+    PRIMARY KEY (department_id)
+);
+
+ALTER TABLE products
+    ADD product_sales INTEGER(20) DEFAULT 0;
+
+INSERT INTO departments (department_name, overhead_costs)
+VALUES ('Clothing', 500),
+('Electronics', 2000),
+('Food', 1000);
 
 SELECT * FROM bamazon.products;
+SELECT * FROM bamazon.departments;
